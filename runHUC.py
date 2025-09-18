@@ -238,7 +238,9 @@ if __name__ == '__main__':
         #direc = r"K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC12/02/huc0202000308/huc0202000308.qgs"
         #direc = r'K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC14/02040303/huc020403030102/huc020403030102.qgs'
         #direc = r'K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC12/02/huc0203010104/huc0203010104.qgs'
-        direc = r"K:\HUCModels\Models5\SWATPlus\Fields_CDL\HUC14\0109000504\huc010900050404\huc010900050404.qgs" 
+        direc = r"K:\HUCModels\Models5\SWATExtended\Fields_CDL\HUC14\020200040306\huc020200040306\huc020200040306.qgs" 
+        #direc = r"K:\HUCModels\Models5\SWATPlus\Fields_CDL\HUC14\0109000504\huc010900050404\huc010900050404.qgs" 
+        subRegion = ''
         dataDir = "K:/Data" 
         scale = 14 
         minHRUha = 1 
@@ -249,13 +251,15 @@ if __name__ == '__main__':
             exit()
         direc = sys.argv[1]
         print('direc is {0}'.format(direc))
-        dataDir = sys.argv[2]
+        subRegion = sys.argv[2]
+        print('subRegion is {0}'.format(subRegion))
+        dataDir = sys.argv[3]
         print('dataDir is {0}'.format(dataDir))
-        scale = int(sys.argv[3])
+        scale = int(sys.argv[4])
         print('Scale is {0}'.format(scale))
-        minHRUha = int(sys.argv[4])
+        minHRUha = int(sys.argv[5])
         print('Minimum HRU size {0} ha'.format(minHRUha))
-        inletId = int(sys.argv[5])
+        inletId = int(sys.argv[6])
         print('inletId is {0}'.format(inletId))
     if inletId > 0:
         # add inlet point with this id to points table of existing project
@@ -266,16 +270,20 @@ if __name__ == '__main__':
         d, _ = os.path.split(direc)
         print('Running project {0}'.format(d))
         try:
-            huc = runHUC(d, None)
+            huc = runHUC(d, d + '/LogFile.txt')
             huc.runProject(dataDir, scale, minHRUha)
             print('Completed project {0}'.format(d))
         except Exception:
             print('ERROR: exception: {0}'.format(traceback.format_exc()))
     else:
-        pattern = direc + '/huc*'
+        if subRegion == '':
+            pattern = direc + '/huc*'
+        else:
+            region = direc[-2:]
+            pattern = direc + '/huc{0}{1}*'.format(region, subRegion)
         dirs = glob.glob(pattern)
         cpuCount = os.cpu_count()
-        numProcesses = min(cpuCount - 2, 24)
+        numProcesses = 4  # min(cpuCount - 2, 24)
         chunk = 1 
         args = [(d, dataDir, scale, minHRUha) for d in dirs]
         with Pool(processes=numProcesses) as pool:

@@ -1045,7 +1045,7 @@ Have you installed SWATPlus?'''.format(dbRefTemplate), self.isBatch)
 SSURGO soil {0} (and perhaps others) not defined in {1} table in database {2}.  {3} table incomplete.
 See QSWAT+ log messages for full list of undefined soils.""".
                                              format(ssurgoId, usersoilTable, database, DBUtils._SOILS_SOL_NAME), self.isBatch)
-                            errorReported = not self._gv.isBatch
+                            errorReported = not self.isBatch
                         QSWATUtils.logerror('SSURGO soil {0} not defined'.format(ssurgoId))
                     else:
                         sid += 1
@@ -3016,6 +3016,7 @@ See QSWAT+ log messages for full list of undefined soils.""".
                              NOT NULL,
             category INTEGER,
             channel  INTEGER,
+            subbasin INTEGER,
             area     REAL,
             slope    REAL,
             len1     REAL,
@@ -3028,7 +3029,7 @@ See QSWAT+ log messages for full list of undefined soils.""".
         );
         """
         
-    _LSUSINSERTSQL = 'INSERT INTO gis_lsus VALUES(?,?,?,?,?,?,?,?,?,?,?,?)'
+    _LSUSINSERTSQL = 'INSERT INTO gis_lsus VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)'
         
     _POINTSCREATESQL = \
         """

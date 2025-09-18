@@ -184,4 +184,8 @@ QSWATTopology.py line 4196
 Moving outlet channel into lake inadequately coded
 QSWATTopology.py 1128 ff
 
+17/9/2025 # 49
+deep aquifer id not same as subbasin id when subbasin outlet in lake: gis_deep_aquifers corrected
+
+
 

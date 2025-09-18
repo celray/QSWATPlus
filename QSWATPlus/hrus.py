@@ -4080,7 +4080,7 @@ class CreateHRUs(QObject):
                             lat = centroid.y()
                             lon = centroid.x()
                             meanElev = lsuData.totalElevation / lsuData.cellCount
-                        curs.execute(DBUtils._LSUSINSERTSQL, (lsuId, landscape, SWATChannel, areaHa, meanSlopePercent, 
+                        curs.execute(DBUtils._LSUSINSERTSQL, (lsuId, landscape, SWATChannel, SWATBasin, areaHa, meanSlopePercent, 
                                            tribDistance, tribSlopePercent, tribWidth, tribDepth, lat, lon, meanElev))
                         self._gv.db.addKey(lsutable, lsuId)
                         if addToSubs1:
@@ -4221,8 +4221,8 @@ class CreateHRUs(QObject):
                 cursor.execute(sql)
                 cursor.execute(self._gv.db._CREATEAQUIFERS)
                 demLayer = QgsRasterLayer(self._gv.demFile, 'DEM')
-                # map of outlet SWATBasin (same as deep aquifer id) to area, elevation * area, x * area, y * area, lakeId or zero
-                deepData: Dict[int, Tuple[float, float, float, float, int]] = dict()
+                # map of outlet deepe aquifer id to SWTBasin, area, elevation * area, x * area, y * area, lakeId or zero
+                deepData: Dict[int, Tuple[int, float, float, float, float, int]] = dict()
                 for basin, basinData in self.basins.items():
                     SWATBasin = self._gv.topo.subbasinToSWATBasin[basin]
                     aquiferId = SWATBasin * 10
@@ -4256,7 +4256,7 @@ class CreateHRUs(QObject):
                         floodArea = chBasinArea - upArea
                         # QSWATUtils.loginfo('Channel {0}: Area: {1}: Up: {2}: Flood: {3}'.format(SWATChannel, chBasinArea, upArea, floodArea))
                         lakeId = outletLakes.get(SWATBasin, 0)
-                        (deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId) = deepData.setdefault(deepAquiferId, (0.0, 0.0, 0.0, 0.0, lakeId))
+                        (SWATBasin, deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId) = deepData.setdefault(deepAquiferId, (SWATBasin, 0.0, 0.0, 0.0, 0.0, lakeId))
                         if hasUp:
                             elev = 0 if upCellCount == 0 else upTotalElevation / upCellCount
                             (aqArea, aqElevMoment, aqXMoment, aqYMoment) = aquiferData.setdefault(upAquiferId, (0.0, 0.0, 0.0, 0.0))
@@ -4298,7 +4298,7 @@ class CreateHRUs(QObject):
                         # upAreaSoFar = aquiferData[upAquiferId][0]
                         # floodAreaSoFar = aquiferData[floodAquiferId][0]
                         # QSWATUtils.loginfo('So far: Up: {0}: Flood: {1}'.format(upAreaSoFar, floodAreaSoFar))
-                        deepData[deepAquiferId] = (deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId)
+                        deepData[deepAquiferId] = (SWATBasin, deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId)
                         # QSWATUtils.loginfo('Deep area so far: {0}'.format(deepArea))
                     # write gis_aquifers and route aquifers
                     centroidll = self._gv.topo.pointToLatLong(centroid)
@@ -4347,13 +4347,12 @@ class CreateHRUs(QObject):
                 sql = 'DROP TABLE IF EXISTS gis_deep_aquifers'
                 cursor.execute(sql)
                 cursor.execute(self._gv.db._CREATEADEEPQUIFERS)
-                for deepAqId, (deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId) in deepData.items():
+                for deepAqId, (SWATBasin, deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId) in deepData.items():
                     elev = deepElevMoment / deepArea
                     centroid = QgsPointXY(deepXMoment / deepArea, deepYMoment / deepArea)
                     centroidll = self._gv.topo.pointToLatLong(centroid)
-                    # SWATbasin is same as aquifer id
                     cursor.execute(DBUtils._INSERTDEEPAQUIFERS, 
-                                   (deepAqId, deepAqId, deepArea / 1E4, centroidll.y(), centroidll.x(), elev))
+                                   (deepAqId, SWATBasin, deepArea / 1E4, centroidll.y(), centroidll.x(), elev))
                     # route total flow from deep aquifer to watershed outlet
                     if lakeId > 0:
                         _, pointId, _, _ = self._gv.topo.lakesData[lakeId].outPoint

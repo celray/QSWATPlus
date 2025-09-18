@@ -139,9 +139,9 @@ cdef class WaterBody:
         ## id set later
         self.id = 0
         ## role of channel: _INNER is default
-        self.channelRole = _INNER
+        self.channelRole = ChannelRole._INNER
         ## water role
-        self.waterRole = _UNKNOWN
+        self.waterRole = WaterRole._UNKNOWN
         
     cdef void addCell(self, double area, double elevation, double x, double y):
         """Add data for 1 cell."""
@@ -182,39 +182,39 @@ cdef class WaterBody:
         
     cpdef void setInlet(self):
         """Set  to inlet.  provents merging downstream"""
-        self.channelRole = _INLET
+        self.channelRole = ChannelRole._INLET
         
     cpdef void setOutlet(self):
         """Set  to outlet."""
-        self.channelRole = _OUTLET
+        self.channelRole = ChannelRole._OUTLET
         
     cpdef void setReservoir(self):
         """Set to reservoir."""
-        self.waterRole = _RESERVOIR
+        self.waterRole = WaterRole._RESERVOIR
         
     cpdef void setPond(self):
         """Set to pond."""
-        self.waterRole = _POND
+        self.waterRole = WaterRole._POND
         
     cpdef bint isInlet(self):
         """Return true if  is inlet."""
-        return self.channelRole == _INLET
+        return self.channelRole == ChannelRole._INLET
     
     cpdef bint isOutlet(self):
         """Return true if  is outlet."""
-        return self.channelRole == _OUTLET
+        return self.channelRole == ChannelRole._OUTLET
     
     cpdef bint isUnknown(self):
         """Return true if water role is unknown."""
-        return self.waterRole == _UNKNOWN
+        return self.waterRole == WaterRole._UNKNOWN
     
     cpdef bint isReservoir(self):
         """Return true if is reservoir."""
-        return self.waterRole == _RESERVOIR
+        return self.waterRole == WaterRole._RESERVOIR
     
     cpdef bint isPond(self):
         """Return true if is pond."""
-        return self.waterRole == _POND
+        return self.waterRole == WaterRole._POND
     
     cpdef WaterBody copy(self):
     
@@ -805,7 +805,7 @@ cdef class LSUData:
         """Set water body to a reservoir if water area exceeds threshold percent of LSU."""
        
         if self.waterBody is not None and self.waterBody.area > threshold * self.area / 100:
-            self.waterBody.waterRole = _RESERVOIR
+            self.waterBody.waterRole = WaterRole._RESERVOIR
         
     @staticmethod
     cdef void mergeMaps(dict map1, dict map2):

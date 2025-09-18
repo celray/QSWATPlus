@@ -519,7 +519,7 @@ Please use the Parameters form to set its location.'''.format(SWATPlusDir), isBa
                 try:
                     use_gwflow0 = row['use_gwflow']
                     if use_gwflow == -1:
-                       use_gwflow = use_gwflow0
+                        use_gwflow = use_gwflow0
                 except:
                     sql = 'ALTER TABLE {0} ADD use_gwflow BOOLEAN DEFAULT(0)'.format(table)
                     cur.execute(sql)
