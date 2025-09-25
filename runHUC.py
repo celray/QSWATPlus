@@ -238,7 +238,7 @@ if __name__ == '__main__':
         #direc = r"K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC12/02/huc0202000308/huc0202000308.qgs"
         #direc = r'K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC14/02040303/huc020403030102/huc020403030102.qgs'
         #direc = r'K:/HUCModels/Models4/SWATPlus/Fields_CDL/HUC12/02/huc0203010104/huc0203010104.qgs'
-        direc = r"K:\HUCModels\Models5\SWATExtended\Fields_CDL\HUC14\020200040306\huc020200040306\huc020200040306.qgs" 
+        direc = r"K:\HUCModels\Models5\SWATExtended\Fields_CDL\HUC14\03040204\huc030402040101\huc030402040101.qgs" 
         #direc = r"K:\HUCModels\Models5\SWATPlus\Fields_CDL\HUC14\0109000504\huc010900050404\huc010900050404.qgs" 
         subRegion = ''
         dataDir = "K:/Data" 

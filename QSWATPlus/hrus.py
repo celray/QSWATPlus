@@ -4221,7 +4221,7 @@ class CreateHRUs(QObject):
                 cursor.execute(sql)
                 cursor.execute(self._gv.db._CREATEAQUIFERS)
                 demLayer = QgsRasterLayer(self._gv.demFile, 'DEM')
-                # map of outlet deepe aquifer id to SWTBasin, area, elevation * area, x * area, y * area, lakeId or zero
+                # map of outlet deep aquifer id to SWTBasin, area, elevation * area, x * area, y * area, lakeId or zero
                 deepData: Dict[int, Tuple[int, float, float, float, float, int]] = dict()
                 for basin, basinData in self.basins.items():
                     SWATBasin = self._gv.topo.subbasinToSWATBasin[basin]
@@ -4256,7 +4256,8 @@ class CreateHRUs(QObject):
                         floodArea = chBasinArea - upArea
                         # QSWATUtils.loginfo('Channel {0}: Area: {1}: Up: {2}: Flood: {3}'.format(SWATChannel, chBasinArea, upArea, floodArea))
                         lakeId = outletLakes.get(SWATBasin, 0)
-                        (SWATBasin, deepArea, deepElevMoment, deepXMoment, deepYMoment, lakeId) = deepData.setdefault(deepAquiferId, (SWATBasin, 0.0, 0.0, 0.0, 0.0, lakeId))
+                        # take care not to go back to old SWATBasin or lakeId
+                        (_, deepArea, deepElevMoment, deepXMoment, deepYMoment, _) = deepData.setdefault(deepAquiferId, (SWATBasin, 0.0, 0.0, 0.0, 0.0, lakeId))
                         if hasUp:
                             elev = 0 if upCellCount == 0 else upTotalElevation / upCellCount
                             (aqArea, aqElevMoment, aqXMoment, aqYMoment) = aquiferData.setdefault(upAquiferId, (0.0, 0.0, 0.0, 0.0))

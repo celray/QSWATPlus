@@ -186,6 +186,9 @@ QSWATTopology.py 1128 ff
 
 17/9/2025 # 49
 deep aquifer id not same as subbasin id when subbasin outlet in lake: gis_deep_aquifers corrected
+hrus.py 4424 ff
 
-
+25/9/2025 # 50
+Previous fix for gis_deep_aquifers could cause duplicated subbasin numbers in gis_aquifers
+hrus.py line 4260
 
