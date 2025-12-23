@@ -328,7 +328,7 @@ deploy: compile
 	$(CPFILE) $(INIT_FILE) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)"
 	$(CPFILE) $(PY_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
 	$(CPFILE) $(PYX_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
-	$(CPFILE) $(OBJ_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
+	$(CPFILE) *.so "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
 	$(CPFILE) $(UI_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
 	$(CPFILE) $(QML_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
 	$(CPFILE) $(QPT_FILES) "$(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)/$(PACKAGE)"
