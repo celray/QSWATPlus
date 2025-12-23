@@ -161,7 +161,7 @@ class Raster():
                 self.chunks[i] = chunk
             # we allocate space for the array early since we want to generate any memory exception early
             if self.canWrite:
-                dtype = np.int_ if self.isInt else np.float_
+                dtype = np.int_ if self.isInt else np.float64
                 # mumpy.core.full introduced in version 1.8
                 if Version(np.__version__) < Version('1.8'):
                     self.array = np.empty((chunkSize, self.numCols), dtype)
